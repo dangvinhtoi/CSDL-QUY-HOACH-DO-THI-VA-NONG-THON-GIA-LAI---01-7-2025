@@ -8,15 +8,12 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- React 18 & ReactDOM CDN -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <!-- React 18 & ReactDOM CDN (cdnjs - Nhanh và Ổn định) -->
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   
   <!-- Babel Standalone CDN -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
   
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -56,104 +53,43 @@
   </style>
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <div style="display:flex; justify-content:center; align-items:center; height:100vh; font-family:sans-serif; color:#64748b;">
+      <div>⏳ Đang tải Hệ thống Quản lý CSDL Quy hoạch Gia Lai...</div>
+    </div>
+  </div>
 
   <script type="text/babel">
-    const { useState, useEffect, useMemo, useRef } = React;
+    const { useState, useEffect, useMemo } = React;
 
     // =========================================================================
-    // 🟢 BỘ TẠO ICON REACT TỰ ĐỘNG TỪ THƯ VIỆN LUCIDE (KHẮC PHỤC TRIỆT ĐỂ LỖI #130)
+    // 🟢 THƯ VIỆN ICON SVG REACT NGUYÊN BẢN (KHÔNG PHỤ THUỘC TỆP NGOÀI - KHÔNG BAO GIỜ LỖI TRANG TRẮNG)
     // =========================================================================
-    function createLucideIconComponent(iconName) {
-      return function LucideIcon({ className = "w-5 h-5", size = 24, color = "currentColor", strokeWidth = 2, ...props }) {
-        const iconRef = useRef(null);
+    const IconBase = ({ className = "w-5 h-5", d, children, viewBox = "0 0 24 24" }) => (
+      <svg className={className} viewBox={viewBox} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        {children || <path d={d} />}
+      </svg>
+    );
 
-        useEffect(() => {
-          if (iconRef.current && window.lucide) {
-            iconRef.current.innerHTML = '';
-            
-            // Tìm định nghĩa icon trong window.lucide.icons (hỗ trợ cả PascalCase, camelCase, lowercase)
-            const icons = window.lucide.icons || {};
-            const key = Object.keys(icons).find(k => k.toLowerCase() === iconName.toLowerCase());
-            const iconDef = key ? icons[key] : null;
+    const Database = (p) => <IconBase {...p} d="M12 2C6.5 2 2 3.8 2 6v12c0 2.2 4.5 4 10 4s10-1.8 10-4V6c0-2.2-4.5-4-10-4zM2 6c0 2.2 4.5 4 10 4s10-1.8 10-4M2 12c0 2.2 4.5 4 10 4s10-1.8 10-4" />;
+    const Cloud = (p) => <IconBase {...p} d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z" />;
+    const Building = (p) => <IconBase {...p}><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v8"/><path d="M18 12h2a2 2 0 0 1 2 2v8"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></IconBase>;
+    const FileText = (p) => <IconBase {...p}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></IconBase>;
+    const Plus = (p) => <IconBase {...p} d="M12 5v14M5 12h14" />;
+    const Search = (p) => <IconBase {...p}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></IconBase>;
+    const Filter = (p) => <IconBase {...p} d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />;
+    const ShieldCheck = (p) => <IconBase {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></IconBase>;
+    const HardDrive = (p) => <IconBase {...p}><line x1="22" y1="12" x2="2" y2="12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><line x1="6" y1="16" x2="6.01" y2="16"/><line x1="10" y1="16" x2="10.01" y2="16"/></IconBase>;
+    const Clock = (p) => <IconBase {...p}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></IconBase>;
+    const Eye = (p) => <IconBase {...p}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></IconBase>;
+    const Trash2 = (p) => <IconBase {...p}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></IconBase>;
+    const BarChart3 = (p) => <IconBase {...p}><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></IconBase>;
+    const Users = (p) => <IconBase {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></IconBase>;
+    const AlertTriangle = (p) => <IconBase {...p}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></IconBase>;
+    const CheckCircle = (p) => <IconBase {...p}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11"/></IconBase>;
+    const X = (p) => <IconBase {...p} d="M18 6L6 18M6 6l12 12" />;
 
-            if (iconDef && window.lucide.createElement) {
-              try {
-                const svgElem = window.lucide.createElement(iconDef);
-                if (className) svgElem.setAttribute('class', className);
-                if (size) {
-                  svgElem.setAttribute('width', size);
-                  svgElem.setAttribute('height', size);
-                }
-                if (color) svgElem.setAttribute('stroke', color);
-                if (strokeWidth) svgElem.setAttribute('stroke-width', strokeWidth);
-                iconRef.current.appendChild(svgElem);
-              } catch (e) {
-                console.warn('Lỗi vẽ icon lucide:', iconName, e);
-              }
-            } else {
-              // Icon dự phòng nhẹ nếu Lucide chưa tải xong
-              iconRef.current.innerHTML = `<svg class="${className}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${strokeWidth}"><circle cx="12" cy="12" r="8"/></svg>`;
-            }
-          }
-        }, [className, size, color, strokeWidth]);
-
-        return <span ref={iconRef} className="inline-flex items-center justify-center shrink-0 align-middle" {...props} />;
-      };
-    }
-
-    // Proxy tự động trả về 1 React Component hợp lệ cho BẤT KỲ icon name nào
-    const LucideIcons = new Proxy({}, {
-      get: (target, prop) => {
-        if (prop === 'then' || typeof prop === 'symbol') return undefined;
-        if (!target[prop]) {
-          target[prop] = createLucideIconComponent(prop);
-        }
-        return target[prop];
-      }
-    });
-
-    // Giải nén các Icon cần dùng (tất cả đều là React Component chuẩn)
-    const { 
-      Database, 
-      Server, 
-      FileText, 
-      X, 
-      AlertTriangle, 
-      Cloud, 
-      CloudUpload, 
-      HardDrive, 
-      RefreshCw, 
-      Search, 
-      Plus, 
-      CheckCircle, 
-      Clock,
-      Edit,
-      Trash2,
-      Eye,
-      Download,
-      Upload,
-      Filter,
-      Layers,
-      MapPin,
-      Users,
-      Settings,
-      HelpCircle,
-      Folder,
-      Calendar,
-      ChevronRight,
-      ChevronDown,
-      Check,
-      Printer,
-      Share2,
-      Building,
-      Globe,
-      BarChart3,
-      ShieldCheck,
-      Activity
-    } = LucideIcons;
-
-    // DỮ LIỆU CŨ VỀ CÁC HUYỆN/THỊ XÃ DÀNH CHO RÀ SOÁT QUY HOẠCH
+    // DỮ LIỆU CỦA HUYỆN/THỊ XÃ
     const OLD_REGIONS = [
       {
         province: 'Gia Lai',
@@ -211,12 +147,12 @@
     // MAIN APP COMPONENT
     // =========================================================================
     function App() {
-      const [activeTab, setActiveTab] = useState('database'); // Default active tab
+      const [activeTab, setActiveTab] = useState('database');
       const [databaseList, setDatabaseList] = useState(INITIAL_DATABASES);
       const [contactList, setContactList] = useState(INITIAL_CONTACTS);
       const [reviewList, setReviewList] = useState(INITIAL_REVIEWS);
 
-      // Search & Filter State for Databases
+      // Search & Filter State
       const [dbSearch, setDbSearch] = useState('');
       const [dbFilterType, setDbFilterType] = useState('ALL');
 
@@ -229,7 +165,6 @@
       const [editingReviewRecord, setEditingReviewRecord] = useState(null);
       const [reviewFormData, setReviewFormData] = useState({ huyen: '', tinhCu: 'Gia Lai', noiDung: '', coQuan: '', trangThai: 'Chưa rà soát', file: '', ghiChu: '' });
 
-      // Add DB Modal State
       const [isAddDbModalOpen, setIsAddDbModalOpen] = useState(false);
       const [newDbFormData, setNewDbFormData] = useState({ name: '', type: 'Quy hoạch chung', size: '50 MB', status: 'Hoạt động' });
 
@@ -245,7 +180,7 @@
 
       const closeConfirm = () => setConfirmDialog({ isOpen: false, title: '', message: '', onConfirm: null });
 
-      // Computed Stats Overview
+      // Computed Stats
       const statsOverview = useMemo(() => {
         const list = databaseList || [];
         const total = list.length;
@@ -254,7 +189,6 @@
         return { total, approved, approvedPercent };
       }, [databaseList]);
 
-      // Filtered Database List
       const filteredDatabases = useMemo(() => {
         return (databaseList || []).filter(db => {
           const matchSearch = (db.name || '').toLowerCase().includes((dbSearch || '').toLowerCase()) || 
@@ -408,7 +342,6 @@
             {/* TAB 1: QUẢN LÝ CSDL */}
             {activeTab === 'database' && (
               <div className="space-y-6">
-                {/* PAGE HEADER */}
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
@@ -811,7 +744,7 @@
             </div>
           )}
 
-          {/* SMART REPORT MODAL & A4 PRINT PREVIEW */}
+          {/* SMART REPORT MODAL */}
           {reportModal.isOpen && (
             <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]">
               <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden max-h-[90vh] flex flex-col">
@@ -899,9 +832,19 @@
       );
     }
 
-    // Render App Component
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
+    // Render App Component với bộ bắt lỗi khởi chạy
+    try {
+      const container = document.getElementById('root');
+      if (ReactDOM.createRoot) {
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+      } else if (ReactDOM.render) {
+        ReactDOM.render(<App />, container);
+      }
+    } catch (err) {
+      console.error("Lỗi khởi chạy React App:", err);
+      document.getElementById('root').innerHTML = '<div style="padding:20px;color:red;font-family:sans-serif;"><h3>Lỗi khởi chạy giao diện!</h3><p>' + err.message + '</p></div>';
+    }
   </script>
 </body>
 </html>
